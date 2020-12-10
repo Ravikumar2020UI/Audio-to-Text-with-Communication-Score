@@ -158,6 +158,30 @@ function startRecording() {
             var blob = new Blob(this.audioChunks);
             recorderBlob = blob;
             console.log("recorderBlob",blob);
+            setTimeout(function(){  
+              fdata = new FormData();
+              var audiotext = $('#audio-textarea').val();
+              fdata.append( 'category',audiotext);
+              fdata.append( 'file',recorderBlob);
+              fdata.append( 'language_id','en-GB');
+              fdata.append( 'user_token','demo');
+              $.ajax({
+                url: 'https://api.soapboxlabs.com/v1/speech/verification',
+                data: fdata,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                headers: {
+                    'x-app-key':'cd2d306a-098d-11eb-872a-8ea592eae0a2',
+                    'accept':'*/*'
+                },            
+                success: function(data){
+                  console.log('Score',data);
+                  communicationscore = data;
+                  $('#audio-communication-result').val(JSON.stringify(data));  
+                }
+              });
+            }, 1000);
           }
         };
         rec.start();
